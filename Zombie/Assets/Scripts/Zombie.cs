@@ -146,7 +146,7 @@ public class Zombie : LivingEntity
             lastAttackTime = Time.time;
 
             Vector3 hitPoint = other.ClosestPoint(transform.position);
-            Vector3 hitNormal = (transform.position - other.transform.position).normalized;
+            Vector3 hitNormal = (other.transform.position - transform.position).normalized;
 
             livingEntity.OnDamage(damage, hitPoint, hitNormal);
         }
