@@ -35,8 +35,21 @@ public class Gun : MonoBehaviour
     private void Awake()
     {
         // 사용할 컴포넌트의 참조 가져오기
-        muzzleFlashEffect ??= GetComponentInChildren<ParticleSystem>();
-        shellEjectEffect ??= GetComponentInChildren<ParticleSystem>();
+        if (muzzleFlashEffect == null || shellEjectEffect == null)
+        {
+            var particleSystems = GetComponentsInChildren<ParticleSystem>();
+            foreach (var ps in particleSystems)
+            {
+                if (ps.gameObject.name.Contains("MuzzleFlash") && muzzleFlashEffect == null)
+                {
+                    muzzleFlashEffect = ps;
+                }
+                else if (ps.gameObject.name.Contains("ShellEject") && shellEjectEffect == null)
+                {
+                    shellEjectEffect = ps;
+                }
+            }
+        }
 
         bulletLineRenderer = GetComponent<LineRenderer>();
         gunAudioPlayer = GetComponent<AudioSource>();
