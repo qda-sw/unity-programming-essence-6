@@ -40,47 +40,28 @@ public class BoundarySetup : MonoBehaviour
 
     private void CreateWall(string name, Vector3 position, Vector3 scale)
     {
-        GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        wall.name = name;
+        GameObject wall = new GameObject(name);
         wall.transform.position = position;
         wall.transform.localScale = scale;
         
-        // 렌더러 비활성화 (보이지 않는 벽)
-        Renderer renderer = wall.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.enabled = false;
-        }
-
-        // Collider는 유지하여 충돌 감지
-        BoxCollider collider = wall.GetComponent<BoxCollider>();
-        if (collider != null)
-        {
-            collider.isTrigger = false;
-        }
+        // 2D Box Collider 추가
+        BoxCollider2D collider = wall.AddComponent<BoxCollider2D>();
+        collider.size = new Vector2(scale.x, scale.y);
+        collider.isTrigger = false;
     }
 
     private void CreateGoal(string name, Vector3 position, Vector3 scale, string tag)
     {
-        GameObject goal = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GameObject goal = new GameObject(name);
         goal.name = name;
         goal.transform.position = position;
         goal.transform.localScale = scale;
         goal.tag = tag;
         
-        // 렌더러 비활성화 (보이지 않는 골대)
-        Renderer renderer = goal.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.enabled = false;
-        }
-
-        // Trigger로 설정하여 공이 통과할 때 감지
-        BoxCollider collider = goal.GetComponent<BoxCollider>();
-        if (collider != null)
-        {
-            collider.isTrigger = true;
-        }
+        // 2D Box Collider를 Trigger로 설정
+        BoxCollider2D collider = goal.AddComponent<BoxCollider2D>();
+        collider.size = new Vector2(scale.x, scale.y);
+        collider.isTrigger = true;
     }
 
     // 기즈모로 경계 표시 (에디터에서만 보임)
@@ -93,12 +74,12 @@ public class BoundarySetup : MonoBehaviour
         
         // 벽 위치 표시
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(new Vector3(0, gameHeight / 2, 0), new Vector3(gameWidth, wallThickness, 1));
-        Gizmos.DrawWireCube(new Vector3(0, -gameHeight / 2, 0), new Vector3(gameWidth, wallThickness, 1));
+        Gizmos.DrawWireCube(new Vector3(0, gameHeight / 2, 0), new Vector3(gameWidth, wallThickness, 0));
+        Gizmos.DrawWireCube(new Vector3(0, -gameHeight / 2, 0), new Vector3(gameWidth, wallThickness, 0));
         
         // 골대 위치 표시
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(new Vector3(-gameWidth / 2 - wallThickness / 2, 0, 0), new Vector3(wallThickness, gameHeight, 1));
-        Gizmos.DrawWireCube(new Vector3(gameWidth / 2 + wallThickness / 2, 0, 0), new Vector3(wallThickness, gameHeight, 1));
+        Gizmos.DrawWireCube(new Vector3(-gameWidth / 2 - wallThickness / 2, 0, 0), new Vector3(wallThickness, gameHeight, 0));
+        Gizmos.DrawWireCube(new Vector3(gameWidth / 2 + wallThickness / 2, 0, 0), new Vector3(wallThickness, gameHeight, 0));
     }
 }
