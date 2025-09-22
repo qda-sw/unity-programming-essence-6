@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 // 좀비 게임 오브젝트를 주기적으로 생성
