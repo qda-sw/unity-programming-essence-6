@@ -13,8 +13,6 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
         infoText.text = string.Empty;
-
-
     }
 
     private void OnEnable()
