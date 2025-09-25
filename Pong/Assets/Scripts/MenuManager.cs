@@ -1,4 +1,4 @@
-using Unity.Netcode; // 유니티 넷코드
+﻿using Unity.Netcode; // 유니티 넷코드
 using Unity.Netcode.Transports.UTP; // 유니티 넷코드 UTP 트랜스포트
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,11 +12,15 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
+        infoText.text = string.Empty;
+
 
     }
 
     private void OnEnable()
     {
+        NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
+        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         // 접속이 종료된 경우 호출되는 콜백을 등록
         NetworkManager.Singleton.OnClientDisconnectCallback
             += OnClientDisconnectCallback;
@@ -36,7 +40,9 @@ public class MenuManager : MonoBehaviour
     // 클라이언트가 연결을 끊었을 때 호출되는 콜백
     private void OnClientDisconnectCallback(ulong obj)
     {
-
+        var reason = NetworkManager.Singleton.DisconnectReason;
+        infoText.text = $"Disconnected: {reason}";
+        Debug.Log($"Disconnected: {reason}");
     }
 
     // 연결을 승인할 때 호출되는 콜백
@@ -44,17 +50,53 @@ public class MenuManager : MonoBehaviour
         NetworkManager.ConnectionApprovalResponse response)
     {
         // 총 플레이어 수가 2명 이상이면 연결을 거부
+        if (NetworkManager.Singleton.ConnectedClients.Count >= 2)
+        {
+            response.Approved = false;
+            response.Reason = "Server full";
+            return;
+        }
+
+        response.Approved = true;
+        response.CreatePlayerObject = false;
     }
 
     // 호스트로 게임을 생성할 때 호출되는 메서드
     public void CreateGameAsHost()
     {
+        var networkManager = NetworkManager.Singleton;
+        var transport = networkManager.NetworkConfig.NetworkTransport
+            as UnityTransport;
 
+        transport.ConnectionData.Port = DefaultPort;
+        bool result = networkManager.StartHost();
+        if (result)
+        {
+            networkManager.SceneManager
+                .LoadScene("Lobby", LoadSceneMode.Single);
+        }
+        else
+        {
+            infoText.text = "Failed to start host";
+            Debug.LogError("Failed to start host");
+        }
     }
 
     // 클라이언트로 게임에 참여할 때 호출되는 메서드
     public void JoinGameAsClient()
     {
+        var networkManager = NetworkManager.Singleton;
+        var transport = networkManager.NetworkConfig.NetworkTransport
+            as UnityTransport;
+
+        transport.ConnectionData.Port = DefaultPort;
+        transport.ConnectionData.Address = hostAddressInputField.text;
+        bool result = networkManager.StartClient();
+        if (!result)
+        {
+            infoText.text = "Failed to start client";
+            Debug.LogError("Failed to start client");
+        }
 
     }
 }
