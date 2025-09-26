@@ -65,7 +65,6 @@ public class Ball : NetworkBehaviour
         else if (collision.gameObject.CompareTag("Wall"))
         {
             direction.y = -direction.y;
-
         }
         else if (collision.gameObject.CompareTag("ScoringZone"))
         {
