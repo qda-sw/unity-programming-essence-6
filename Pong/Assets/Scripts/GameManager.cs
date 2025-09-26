@@ -67,7 +67,7 @@ public class GameManager : NetworkBehaviour
     }
 
     // 게임 도중 클라이언트가 나갔을때 실행
-    private void OnClientDisconnected(ulong clinetId)
+    private void OnClientDisconnected(ulong clientId)
     {
         if (IsGameActive)
         {
