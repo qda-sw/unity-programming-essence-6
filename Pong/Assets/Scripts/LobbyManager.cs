@@ -129,9 +129,9 @@ public class LobbyManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        NetworkManager.OnClientConnectedCallback -= OnClientConnected;
-        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnected;
-        NetworkManager.SceneManager.OnLoadComplete -= OnClientSceneLoadComplete;
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnClientSceneLoadComplete;
 
         NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
     }
